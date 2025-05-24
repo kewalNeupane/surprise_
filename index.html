@@ -13,7 +13,10 @@
       font-family: Arial, sans-serif;
       height: 100%;
       width: 100%;
+      pointer-events: none;
+      user-select: none;
     }
+
     #overlay {
       position: fixed;
       top: 0; left: 0;
@@ -21,27 +24,30 @@
       height: 100vh;
       background-color: white;
       color: black;
-      font-size: 2em;
+      font-size: 2.5em;
+      font-weight: bold;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 9999;
       text-align: center;
+      z-index: 9999;
     }
+
     #timer {
-      margin-top: 20px;
-      font-size: 1.5em;
-      font-weight: bold;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      font-size: 14px;
+      font-weight: normal;
+      z-index: 10000;
     }
   </style>
 </head>
 <body>
   <div id="overlay">
-    You have been pranked by Kewal 😈<br>
-    Please wait for 5 minutes...
-    <div id="timer">05:00</div>
+    You have been pranked by Kewal 😈
   </div>
+  <div id="timer">05:00</div>
 
   <script>
     // Block back button
@@ -50,14 +56,13 @@
       history.pushState(null, null, location.href);
     };
 
-    // Disable user interaction
-    document.body.style.pointerEvents = 'none';
-    document.body.style.userSelect = 'none';
+    // Lock keyboard
+    window.addEventListener('keydown', e => e.preventDefault(), true);
 
-    // Countdown timer logic
-    let remainingTime = 5 * 60; // 5 minutes in seconds
-
+    // Countdown logic
+    let remainingTime = 5 * 60;
     const timerElement = document.getElementById('timer');
+
     const interval = setInterval(() => {
       const minutes = String(Math.floor(remainingTime / 60)).padStart(2, '0');
       const seconds = String(remainingTime % 60).padStart(2, '0');
@@ -67,6 +72,8 @@
       if (remainingTime < 0) {
         clearInterval(interval);
         document.getElementById('overlay').style.display = 'none';
+        timerElement.style.display = 'none';
+        // Unlock interaction after 5 minutes
         document.body.style.pointerEvents = 'auto';
         document.body.style.userSelect = 'auto';
       }
